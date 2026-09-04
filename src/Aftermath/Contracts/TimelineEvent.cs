@@ -35,8 +35,8 @@ public enum EventKind
     /// metrics store (plan.md §3.6a).</summary>
     HttpMetrics,
 
-    /// <summary>A GitLab CI pipeline result (Phase 7) — GitLab holds no deployment record for
-    /// this estate (zero `environment:` keys in any `.gitlab-ci.yml`), so this is the pass/fail
+    /// <summary>A CI pipeline result — a GitLab pipeline or a GitHub Actions workflow run
+    /// (Phase 7). Neither holds a deployment record for this estate, so this is the pass/fail
     /// signal, not a deploy. Only failures are surfaced; a stream of "pipeline succeeded" for
     /// every commit would be noise with no more signal than the commit itself already carries.</summary>
     CiPipeline,

@@ -114,8 +114,8 @@ public sealed class TimelineBuilderTests
         int releaseIndex = timeline.Events.ToList().FindIndex(e => e is { Service: "core-service", Kind: EventKind.Release });
         int commitIndex = timeline.Events.ToList().FindIndex(e => e is { Service: "billing-service", Kind: EventKind.Commit });
 
-        // Same instant: "core-service" sorts before "billing-service" ordinally.
-        Assert.True(releaseIndex < commitIndex);
+        // Same instant: "billing-service" sorts before "core-service" ordinally.
+        Assert.True(commitIndex < releaseIndex);
     }
 
     [Fact]

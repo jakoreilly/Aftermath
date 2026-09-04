@@ -7,7 +7,8 @@
       "env": {
         "INCIDENTTIMELINE_WORKSPACE": "c:\\workspace\\work",
         "INCIDENTTIMELINE_LOG_ROOT": "c:\\incident\\logs",
-        "INCIDENTTIMELINE_TIMEZONE": "Europe/Dublin"
+        "INCIDENTTIMELINE_TIMEZONE": "Europe/Dublin",
+        "INCIDENTTIMELINE_LOKI_URL": "http://localhost:3100"
       }
     }
   }

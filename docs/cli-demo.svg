@@ -1,0 +1,28 @@
+<svg width="900" height="340" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aftermath --help, real captured terminal output">
+  <title>aftermath --help</title>
+  <desc>Real captured output of running the built CLI with --help, not mocked up.</desc>
+
+  <rect x="1" y="1" width="898" height="338" rx="14" fill="#0d1117" stroke="#21262d" stroke-width="1"/>
+
+  <!-- title bar -->
+  <rect x="1" y="1" width="898" height="38" rx="14" fill="#161b22"/>
+  <rect x="1" y="25" width="898" height="14" fill="#161b22"/>
+  <circle cx="26" cy="20" r="6" fill="#ff5f56"/>
+  <circle cx="46" cy="20" r="6" fill="#ffbd2e"/>
+  <circle cx="66" cy="20" r="6" fill="#27c93f"/>
+  <text x="450" y="25" text-anchor="middle" font-family="ui-monospace, 'Cascadia Code', 'Consolas', monospace" font-size="13" fill="#8b949e">aftermath --help</text>
+
+  <g font-family="ui-monospace, 'Cascadia Code', 'Consolas', monospace" font-size="15" fill="#c9d1d9">
+    <text x="28" y="72"><tspan fill="#8b7cf0">$</tspan> aftermath --help</text>
+    <text x="28" y="100" fill="#e6edf3">Aftermath — assembles a provenance-labelled incident timeline.</text>
+    <text x="28" y="122">Read-only and offline by default: it opens no database and needs no credential.</text>
+    <text x="28" y="158" fill="#ffc373">Usage:</text>
+    <text x="28" y="180">  Aftermath services --workspace &lt;dir&gt;</text>
+    <text x="28" y="202">  Aftermath collect  --workspace &lt;dir&gt; --at &lt;instant&gt; [--window 24h] [--forward 2h]</text>
+    <text x="28" y="224">  Aftermath draft    --workspace &lt;dir&gt; --at &lt;instant&gt; [--out draft.md]</text>
+    <text x="28" y="260" fill="#ffc373">Commands:</text>
+    <text x="28" y="282">  services   Build the service join table from a workspace of git clones.</text>
+    <text x="28" y="304">  collect    Gather evidence around an incident from every offline source and…</text>
+    <text x="28" y="326">  draft      Render the fixed-template postmortem draft: what was looked at…</text>
+  </g>
+</svg>

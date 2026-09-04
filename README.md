@@ -1,15 +1,39 @@
-﻿# Aftermath
+﻿<p align="center">
+  <img src="docs/logo-banner.svg" alt="Aftermath — a provenance-labelled incident timeline" width="640">
+</p>
 
-Assembles a provenance-labelled incident timeline from local git clones, log files and
-(later) Octopus Deploy and DbExplorer.
+<p align="center">
+  <a href="https://github.com/jakoreilly/Aftermath/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/jakoreilly/Aftermath/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white">
+  <img alt="MCP server" src="https://img.shields.io/badge/MCP-server-3b82f6">
+  <img alt="Offline by default" src="https://img.shields.io/badge/network-off%20by%20default-f5a623">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-8b7cf0"></a>
+</p>
+
+When something breaks at 3am, someone has to reconstruct what happened right before it —
+tabbing between git, the deploy tool, log files and a database, by hand, at the worst
+possible time to be doing careful detective work. **Aftermath does that reconstruction for
+you.** Point it at a workspace of git clones and an incident time, and it pulls every
+release, commit, deploy and log error near that moment across every service, lines them up
+into one timeline with everything traceable back to its source, ranks what changed nearby
+(never asserting a cause), and writes the first draft of the postmortem document.
+
+It calls no AI model itself — everything above is deterministic and evidence-only — but
+exposes itself as an MCP server (five tools) so an AI assistant can drive it live during an
+incident and narrate the findings, while Aftermath stays the boring, trustworthy
+fact-gatherer underneath.
 
 **Read-only and offline by default.** It opens no database, holds no credential, writes to
 no remote system, and never opens a file in the evidence workspace for writing. A default
-run completes with the network cable unplugged.
+run completes with the network cable unplugged — Octopus Deploy, DbExplorer, GitLab and
+GitHub are all real evidence sources, but every one of them is opt-in behind `--online`.
 
 This repository's README documents the design decisions directly; the original phase-by-phase
 implementation plan (with local development-machine paths) is kept out of the public copy.
 
+<p align="center">
+  <img src="docs/cli-demo.svg" alt="aftermath --help, real captured terminal output" width="640">
+</p>
 
 ## Build and test
 
@@ -207,18 +231,29 @@ MCP server's *own* stdin — the host's JSON-RPC pipe — and blocked on it. No 
 timeout, nothing a unit test could see, because no unit test runs inside an MCP host's own
 process — the bug was found by probing the MCP server live with raw stdio, not by the unit suite.
 
-## The three network sources — opt-in, behind `--online`
+### MCP-server logs → Loki/Grafana (opt-in)
 
-Octopus deploys, DbExplorer diagnostics and GitLab CI pipelines are all real evidence sources,
-but every one of them opens a socket, so all three are opt-in behind `--online` (hard
-constraint 1) — the default run still completes with the network cable unplugged, and each
-source individually Skips when its own URL isn't configured, so partial credentials degrade
-per source rather than all-or-nothing:
+The MCP server logs through Serilog to stderr (stdout is protocol traffic and stays clean).
+Set `INCIDENTTIMELINE_LOKI_URL` and the same lines also ship to a local Loki under the label
+`{app="aftermath"}`, queryable in Grafana Explore. With the variable unset the server behaves
+exactly as before and opens no socket (hard constraint 1) — same opt-in shape as `--online`.
+[`observability/`](observability/) has a no-Docker Loki + Grafana stack (`start.ps1`) and the
+end-to-end verification notes. The one-shot CLI still writes plain stderr text and is
+unaffected.
+
+## The network sources — opt-in, behind `--online`
+
+Octopus deploys, DbExplorer diagnostics, GitLab CI pipelines and GitHub Actions runs are all
+real evidence sources, but every one of them opens a socket, so all of them are opt-in behind
+`--online` (hard constraint 1) — the default run still completes with the network cable
+unplugged, and each source individually Skips when its own URL/token isn't configured, so
+partial credentials degrade per source rather than all-or-nothing:
 
 ```
 run.cmd draft --workspace c:\workspace\work --at 2026-07-17T13:00:00Z --online ^
   --octopus-url https://deploy.acme.example --octopus-token API-XXXX ^
-  --gitlab-url https://bull.acme.example --gitlab-token glpat-XXXX
+  --gitlab-url https://bull.acme.example --gitlab-token glpat-XXXX ^
+  --github-token ghp-XXXX
 ```
 
 | Source | Adds | Confidence | Verified live? |
@@ -226,13 +261,16 @@ run.cmd draft --workspace c:\workspace\work --at 2026-07-17T13:00:00Z --online ^
 | `octopus` | `Deploy` events, joined on `ServiceManifest.OctopusProjectSlug` | `Reported` | Endpoint reachable (a genuine Octopus 401 with no token) — fixture-based for lack of a token, not a network path |
 | `dbexplorer` | `DbBlocking`/`DbDeadlock` events, estate-wide (`Service = "*"`) | `Reported` | No runtime URL discoverable anywhere in this workspace — fixture-only; only the 403/Profiler-scope degradation is confirmed |
 | `gitlab` | `CiPipeline` events, failures only | `Reported` | **Built against a live response** — `bull.acme.example` answered real project/pipeline data behind this machine's TLS-inspecting proxy; Phase 0's original "unreachable" verdict most likely mis-read that proxy's handshake failure as GitLab rejecting the request |
+| `github` | `CiPipeline` events, failed workflow runs only | `Reported` | **Not probed** — DTOs built from GitHub's documented REST v3 shape for `GET /repos/{owner}/{repo}/actions/runs`, not a captured response; tests run against a hand-written fixture of that shape |
 
-`gitlab` resolves each clone's own GitLab project by reading its `origin` remote (the same
-`IGitRunner` seam `git` already uses) rather than guessing a path — always accurate, since it
-comes from the clone itself.
+`gitlab` and `github` each resolve a clone's own project by reading its `origin` remote (the
+same `IGitRunner` seam `git` already uses) rather than guessing a path — always accurate,
+since it comes from the clone itself. `github` keys off `--github-token` (or
+`INCIDENTTIMELINE_GITHUB_TOKEN`); the base URL defaults to `https://api.github.com` and only
+a GitHub Enterprise Server host needs `--github-url`.
 
-Adding all three sources changed **zero files** under `Correlation/` or `Rendering/` — the
-abstraction proof Phase 7 exists for — and `draft` with no `--online` produces output
+Adding every one of these sources changed **zero files** under `Correlation/` or `Rendering/`
+— the abstraction proof Phase 7 exists for — and `draft` with no `--online` produces output
 identical to before these sources existed, given the same inputs (verified with `git
 worktree` against the `v0.6-preflight` tag).
 
@@ -248,4 +286,4 @@ worktree` against the `v0.6-preflight` tag).
 | 6 | MCP front door — the LLM narrates through it | **done** |
 | 7 | Octopus / DbExplorer / GitLab behind the source interface | **done** |
 
-All seven phases are complete: 221 tests, 0 build warnings, every hard-constraint grep clean.
+All seven phases are complete: 238 tests, 0 build warnings, every hard-constraint grep clean.

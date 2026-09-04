@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 
 /// <summary>
 /// Pulls JIRA keys out of commit subjects and changelog bodies.
-/// TRAN 2251 uses, PMOB 172, PMD 4 across the estate's changelogs (Phase 0 count).
+/// INC 2251 uses, PMOB 172, PMD 4 across the estate's changelogs (Phase 0 count).
 /// </summary>
 public static partial class TicketKeys
 {
     /// <summary>The estate's three JIRA projects, in Phase 0 frequency order.</summary>
-    public static readonly IReadOnlyList<string> DefaultPrefixes = ["TRAN", "PMOB", "PMD"];
+    public static readonly IReadOnlyList<string> DefaultPrefixes = ["INC", "PMOB", "PMD"];
 
     // An unanchored [A-Z]{2,10}-\d+ also matches UTF-8, SHA-256 and NET-6, so the prefix is
     // captured and then checked against an allow-list in Extract. The allow-list cannot live

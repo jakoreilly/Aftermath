@@ -13,7 +13,7 @@
     <Product>Acme Incident Timeline</Product>
     <Copyright>Copyright © Acme Ireland</Copyright>
     <PackageTags>mcp;model-context-protocol;incident;postmortem;log4net;octopus</PackageTags>
-    <RepositoryUrl>https://bull.acme.example/acme-group/nuget-packages/Acme-incidenttimeline</RepositoryUrl>
+    <RepositoryUrl>https://github.com/jakoreilly/Aftermath</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackAsTool>true</PackAsTool>
@@ -24,6 +24,9 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     <PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.3" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup>

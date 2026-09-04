@@ -5,6 +5,13 @@
 package-lock.json
 /src/Acme.Ledger.AccountService.WebApi/Acme.Ledger.AccountService.WebApi.xml
 
+# Local Loki + Grafana observability instance (observability/start.ps1) - the
+# downloaded binaries and each service's own data/state are large and
+# machine-specific; the config and scripts are checked in, these are not.
+/observability/bin/
+/observability/data/
+/observability/*.pid
+
 # Internal planning notes: written during development against a local, non-public
 # workspace path and referencing internal exemplar repos - never meant to ship with
 # the public copy of this project. Kept on disk locally, excluded from git.
