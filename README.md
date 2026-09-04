@@ -1,15 +1,38 @@
-﻿# Aftermath
+﻿<p align="center">
+  <img src="docs/logo-banner.svg" alt="Aftermath — a provenance-labelled incident timeline" width="640">
+</p>
 
-Assembles a provenance-labelled incident timeline from local git clones, log files and
-(later) Octopus Deploy and DbExplorer.
+<p align="center">
+  <a href="https://github.com/jakoreilly/Aftermath/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/jakoreilly/Aftermath/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white">
+  <img alt="MCP server" src="https://img.shields.io/badge/MCP-server-3b82f6">
+  <img alt="Offline by default" src="https://img.shields.io/badge/network-off%20by%20default-f5a623">
+</p>
+
+When something breaks at 3am, someone has to reconstruct what happened right before it —
+tabbing between git, the deploy tool, log files and a database, by hand, at the worst
+possible time to be doing careful detective work. **Aftermath does that reconstruction for
+you.** Point it at a workspace of git clones and an incident time, and it pulls every
+release, commit, deploy and log error near that moment across every service, lines them up
+into one timeline with everything traceable back to its source, ranks what changed nearby
+(never asserting a cause), and writes the first draft of the postmortem document.
+
+It calls no AI model itself — everything above is deterministic and evidence-only — but
+exposes itself as an MCP server (five tools) so an AI assistant can drive it live during an
+incident and narrate the findings, while Aftermath stays the boring, trustworthy
+fact-gatherer underneath.
 
 **Read-only and offline by default.** It opens no database, holds no credential, writes to
 no remote system, and never opens a file in the evidence workspace for writing. A default
-run completes with the network cable unplugged.
+run completes with the network cable unplugged — Octopus Deploy, DbExplorer, GitLab and
+GitHub are all real evidence sources, but every one of them is opt-in behind `--online`.
 
 This repository's README documents the design decisions directly; the original phase-by-phase
 implementation plan (with local development-machine paths) is kept out of the public copy.
 
+<p align="center">
+  <img src="docs/cli-demo.svg" alt="aftermath --help, real captured terminal output" width="640">
+</p>
 
 ## Build and test
 
