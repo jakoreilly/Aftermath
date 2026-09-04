@@ -203,7 +203,7 @@ public static class CliRunner
               --window <duration>        How far back to look. Default 24h. Units: s, m, h, d.
               --forward <duration>       How far forward to look. Default 2h.
               --ticket-prefixes <list>   JIRA project prefixes to extract, comma separated.
-                                         Default TRAN,PMOB,PMD.
+                                         Default INC,PMOB,PMD.
               --log-root <dir>           Directory holding locally-copied log4net files and
                                          Error.txt dumps. Production's own log path is an
                                          Octopus token and can never be discovered from a
