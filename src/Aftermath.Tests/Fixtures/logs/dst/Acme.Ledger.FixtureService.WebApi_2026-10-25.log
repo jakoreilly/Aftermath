@@ -1,0 +1,2 @@
+00:15:00.000 [sess-2] [0002] INFO  Worker - normal line before the fold
+01:30:00.000 [sess-2] [0002] WARN  Worker - ambiguous instant during DST fold

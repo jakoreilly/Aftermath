@@ -1,0 +1,2 @@
+﻿System.Exception: unhandled startup exception
+   at Acme.Ledger.SomeHost.WebApi.Startup.Configure()

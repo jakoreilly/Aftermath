@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>Aftermath</PackageId>
+    <Version>1.0.0</Version>
+    <Title>Acme Incident Timeline</Title>
+    <Description>Assembles a provenance-labelled incident timeline from local clones, log files and (optionally) Octopus/DbExplorer. Read-only, offline by default.</Description>
+    <Authors>Acme Ireland</Authors>
+    <Company>Acme Ireland</Company>
+    <Product>Acme Incident Timeline</Product>
+    <Copyright>Copyright © Acme Ireland</Copyright>
+    <PackageTags>mcp;model-context-protocol;incident;postmortem;log4net;octopus</PackageTags>
+    <RepositoryUrl>https://bull.acme.example/acme-group/nuget-packages/Acme-incidenttimeline</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>Aftermath</ToolCommandName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Aftermath.Tests" />
+  </ItemGroup>
+</Project>

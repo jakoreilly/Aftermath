@@ -1,0 +1,8 @@
+{
+  "Items": [
+    {
+      "ObservedAtUtc": "2026-07-17T12:31:04Z",
+      "Description": "SPID 84 blocked SPID 91 for 6200ms on object dbo.ParkingSession (KEY lock)"
+    }
+  ]
+}
