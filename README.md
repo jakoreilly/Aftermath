@@ -7,6 +7,7 @@
   <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white">
   <img alt="MCP server" src="https://img.shields.io/badge/MCP-server-3b82f6">
   <img alt="Offline by default" src="https://img.shields.io/badge/network-off%20by%20default-f5a623">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-8b7cf0"></a>
 </p>
 
 When something breaks at 3am, someone has to reconstruct what happened right before it —
