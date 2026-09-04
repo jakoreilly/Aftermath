@@ -207,6 +207,16 @@ MCP server's *own* stdin — the host's JSON-RPC pipe — and blocked on it. No 
 timeout, nothing a unit test could see, because no unit test runs inside an MCP host's own
 process — the bug was found by probing the MCP server live with raw stdio, not by the unit suite.
 
+### MCP-server logs → Loki/Grafana (opt-in)
+
+The MCP server logs through Serilog to stderr (stdout is protocol traffic and stays clean).
+Set `INCIDENTTIMELINE_LOKI_URL` and the same lines also ship to a local Loki under the label
+`{app="aftermath"}`, queryable in Grafana Explore. With the variable unset the server behaves
+exactly as before and opens no socket (hard constraint 1) — same opt-in shape as `--online`.
+[`observability/`](observability/) has a no-Docker Loki + Grafana stack (`start.ps1`) and the
+end-to-end verification notes. The one-shot CLI still writes plain stderr text and is
+unaffected.
+
 ## The network sources — opt-in, behind `--online`
 
 Octopus deploys, DbExplorer diagnostics, GitLab CI pipelines and GitHub Actions runs are all
