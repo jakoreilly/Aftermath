@@ -13,7 +13,7 @@
     <Product>Acme Incident Timeline</Product>
     <Copyright>Copyright © Acme Ireland</Copyright>
     <PackageTags>mcp;model-context-protocol;incident;postmortem;log4net;octopus</PackageTags>
-    <RepositoryUrl>https://bull.acme.example/acme-group/nuget-packages/Acme-incidenttimeline</RepositoryUrl>
+    <RepositoryUrl>https://github.com/jakoreilly/Aftermath</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackAsTool>true</PackAsTool>

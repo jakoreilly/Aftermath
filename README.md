@@ -207,18 +207,19 @@ MCP server's *own* stdin — the host's JSON-RPC pipe — and blocked on it. No 
 timeout, nothing a unit test could see, because no unit test runs inside an MCP host's own
 process — the bug was found by probing the MCP server live with raw stdio, not by the unit suite.
 
-## The three network sources — opt-in, behind `--online`
+## The network sources — opt-in, behind `--online`
 
-Octopus deploys, DbExplorer diagnostics and GitLab CI pipelines are all real evidence sources,
-but every one of them opens a socket, so all three are opt-in behind `--online` (hard
-constraint 1) — the default run still completes with the network cable unplugged, and each
-source individually Skips when its own URL isn't configured, so partial credentials degrade
-per source rather than all-or-nothing:
+Octopus deploys, DbExplorer diagnostics, GitLab CI pipelines and GitHub Actions runs are all
+real evidence sources, but every one of them opens a socket, so all of them are opt-in behind
+`--online` (hard constraint 1) — the default run still completes with the network cable
+unplugged, and each source individually Skips when its own URL/token isn't configured, so
+partial credentials degrade per source rather than all-or-nothing:
 
 ```
 run.cmd draft --workspace c:\workspace\work --at 2026-07-17T13:00:00Z --online ^
   --octopus-url https://deploy.acme.example --octopus-token API-XXXX ^
-  --gitlab-url https://bull.acme.example --gitlab-token glpat-XXXX
+  --gitlab-url https://bull.acme.example --gitlab-token glpat-XXXX ^
+  --github-token ghp-XXXX
 ```
 
 | Source | Adds | Confidence | Verified live? |
@@ -226,13 +227,16 @@ run.cmd draft --workspace c:\workspace\work --at 2026-07-17T13:00:00Z --online ^
 | `octopus` | `Deploy` events, joined on `ServiceManifest.OctopusProjectSlug` | `Reported` | Endpoint reachable (a genuine Octopus 401 with no token) — fixture-based for lack of a token, not a network path |
 | `dbexplorer` | `DbBlocking`/`DbDeadlock` events, estate-wide (`Service = "*"`) | `Reported` | No runtime URL discoverable anywhere in this workspace — fixture-only; only the 403/Profiler-scope degradation is confirmed |
 | `gitlab` | `CiPipeline` events, failures only | `Reported` | **Built against a live response** — `bull.acme.example` answered real project/pipeline data behind this machine's TLS-inspecting proxy; Phase 0's original "unreachable" verdict most likely mis-read that proxy's handshake failure as GitLab rejecting the request |
+| `github` | `CiPipeline` events, failed workflow runs only | `Reported` | **Not probed** — DTOs built from GitHub's documented REST v3 shape for `GET /repos/{owner}/{repo}/actions/runs`, not a captured response; tests run against a hand-written fixture of that shape |
 
-`gitlab` resolves each clone's own GitLab project by reading its `origin` remote (the same
-`IGitRunner` seam `git` already uses) rather than guessing a path — always accurate, since it
-comes from the clone itself.
+`gitlab` and `github` each resolve a clone's own project by reading its `origin` remote (the
+same `IGitRunner` seam `git` already uses) rather than guessing a path — always accurate,
+since it comes from the clone itself. `github` keys off `--github-token` (or
+`INCIDENTTIMELINE_GITHUB_TOKEN`); the base URL defaults to `https://api.github.com` and only
+a GitHub Enterprise Server host needs `--github-url`.
 
-Adding all three sources changed **zero files** under `Correlation/` or `Rendering/` — the
-abstraction proof Phase 7 exists for — and `draft` with no `--online` produces output
+Adding every one of these sources changed **zero files** under `Correlation/` or `Rendering/`
+— the abstraction proof Phase 7 exists for — and `draft` with no `--online` produces output
 identical to before these sources existed, given the same inputs (verified with `git
 worktree` against the `v0.6-preflight` tag).
 
@@ -248,4 +252,4 @@ worktree` against the `v0.6-preflight` tag).
 | 6 | MCP front door — the LLM narrates through it | **done** |
 | 7 | Octopus / DbExplorer / GitLab behind the source interface | **done** |
 
-All seven phases are complete: 221 tests, 0 build warnings, every hard-constraint grep clean.
+All seven phases are complete: 238 tests, 0 build warnings, every hard-constraint grep clean.

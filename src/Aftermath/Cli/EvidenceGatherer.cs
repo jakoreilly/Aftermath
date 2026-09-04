@@ -68,6 +68,7 @@ public static class EvidenceGatherer
         yield return new OctopusDeploySource(BuildOctopusClient(online));
         yield return new DbDiagnosticsSource(BuildDbExplorerClient(online));
         yield return new GitLabPipelineSource(new ProcessGitRunner(), BuildGitLabClient(online));
+        yield return new GitHubActionsSource(new ProcessGitRunner(), BuildGitHubClient(online));
     }
 
     private static IOctopusClient? BuildOctopusClient(OnlineSourceOptions online)
@@ -118,6 +119,27 @@ public static class EvidenceGatherer
         }
 
         return new HttpGitLabClient(http);
+    }
+
+    /// <summary>Unlike the other three, GitHub keys off the TOKEN, not the URL: the base URL
+    /// defaults to api.github.com and only a GitHub Enterprise Server host needs to override
+    /// it. No token -> null -> the source Skips.</summary>
+    private static IGitHubClient? BuildGitHubClient(OnlineSourceOptions online)
+    {
+        if (string.IsNullOrWhiteSpace(online.GitHubToken))
+        {
+            return null;
+        }
+
+        var http = new HttpClient
+        {
+            BaseAddress = new Uri(string.IsNullOrWhiteSpace(online.GitHubUrl) ? OnlineSourceOptions.DefaultGitHubUrl : online.GitHubUrl),
+        };
+        http.DefaultRequestHeaders.Add("User-Agent", "Aftermath");
+        http.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+        http.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
+        http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", online.GitHubToken);
+        return new HttpGitHubClient(http);
     }
 
     /// <summary>--timezone defaults to Europe/Dublin (constraint 11: resolved via ICU, never

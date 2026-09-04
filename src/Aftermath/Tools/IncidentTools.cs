@@ -93,9 +93,9 @@ public sealed class IncidentTools(WorkspaceRegistry registry)
         string? timezone = null,
         [Description("JIRA project prefixes to extract from commits/changelogs, comma separated. Default TRAN,PMOB,PMD.")]
         string? ticketPrefixes = null,
-        [Description("Opt into the three network-touching sources (Octopus deploys, DbExplorer diagnostics, "
-            + "GitLab pipelines) — false by default, so a call with this omitted never opens a socket. Each "
-            + "source still individually Skips if its own URL/token is not configured.")]
+        [Description("Opt into the network-touching sources (Octopus deploys, DbExplorer diagnostics, "
+            + "GitLab pipelines, GitHub Actions runs) — false by default, so a call with this omitted never "
+            + "opens a socket. Each source still individually Skips if its own URL/token is not configured.")]
         bool online = false,
         CancellationToken ct = default)
     {
@@ -145,9 +145,9 @@ public sealed class IncidentTools(WorkspaceRegistry registry)
         string? timezone = null,
         [Description("JIRA project prefixes to extract from commits/changelogs, comma separated. Default TRAN,PMOB,PMD.")]
         string? ticketPrefixes = null,
-        [Description("Opt into the three network-touching sources (Octopus deploys, DbExplorer diagnostics, "
-            + "GitLab pipelines) — false by default, so a call with this omitted never opens a socket. Each "
-            + "source still individually Skips if its own URL/token is not configured.")]
+        [Description("Opt into the network-touching sources (Octopus deploys, DbExplorer diagnostics, "
+            + "GitLab pipelines, GitHub Actions runs) — false by default, so a call with this omitted never "
+            + "opens a socket. Each source still individually Skips if its own URL/token is not configured.")]
         bool online = false,
         CancellationToken ct = default)
     {
@@ -206,9 +206,9 @@ public sealed class IncidentTools(WorkspaceRegistry registry)
         string? timezone = null,
         [Description("JIRA project prefixes to extract from commits/changelogs, comma separated. Default TRAN,PMOB,PMD.")]
         string? ticketPrefixes = null,
-        [Description("Opt into the three network-touching sources (Octopus deploys, DbExplorer diagnostics, "
-            + "GitLab pipelines) — false by default, so a call with this omitted never opens a socket. Each "
-            + "source still individually Skips if its own URL/token is not configured.")]
+        [Description("Opt into the network-touching sources (Octopus deploys, DbExplorer diagnostics, "
+            + "GitLab pipelines, GitHub Actions runs) — false by default, so a call with this omitted never "
+            + "opens a socket. Each source still individually Skips if its own URL/token is not configured.")]
         bool online = false,
         CancellationToken ct = default)
     {
@@ -262,9 +262,9 @@ public sealed class IncidentTools(WorkspaceRegistry registry)
         string? timezone = null,
         [Description("JIRA project prefixes to extract from commits/changelogs, comma separated. Default TRAN,PMOB,PMD.")]
         string? ticketPrefixes = null,
-        [Description("Opt into the three network-touching sources (Octopus deploys, DbExplorer diagnostics, "
-            + "GitLab pipelines) — false by default, so a call with this omitted never opens a socket. Each "
-            + "source still individually Skips if its own URL/token is not configured.")]
+        [Description("Opt into the network-touching sources (Octopus deploys, DbExplorer diagnostics, "
+            + "GitLab pipelines, GitHub Actions runs) — false by default, so a call with this omitted never "
+            + "opens a socket. Each source still individually Skips if its own URL/token is not configured.")]
         bool online = false,
         CancellationToken ct = default)
     {

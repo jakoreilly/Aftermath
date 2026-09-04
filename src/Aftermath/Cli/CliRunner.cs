@@ -148,6 +148,8 @@ public static class CliRunner
         DbExplorerToken = FlagOrVar(flags, "dbexplorer-token", OnlineSourceOptions.DbExplorerTokenVar),
         GitLabUrl = FlagOrVar(flags, "gitlab-url", OnlineSourceOptions.GitLabUrlVar),
         GitLabToken = FlagOrVar(flags, "gitlab-token", OnlineSourceOptions.GitLabTokenVar),
+        GitHubUrl = FlagOrVar(flags, "github-url", OnlineSourceOptions.GitHubUrlVar),
+        GitHubToken = FlagOrVar(flags, "github-token", OnlineSourceOptions.GitHubTokenVar),
     };
 
     private static string? FlagOrVar(Dictionary<string, string?> flags, string flagName, string envVar) =>
@@ -213,21 +215,26 @@ public static class CliRunner
               --out <path>               (draft only) File to write the document to. Prints to
                                          stdout when omitted.
               --online                   Opt into the network-touching sources (Octopus
-                                         deploys, DbExplorer diagnostics, GitLab pipelines).
-                                         Absent by default, so the default run completes with
-                                         the network cable unplugged. Each source still
-                                         individually Skips if its own URL/token below is not
-                                         configured.
+                                         deploys, DbExplorer diagnostics, GitLab pipelines,
+                                         GitHub Actions runs). Absent by default, so the
+                                         default run completes with the network cable
+                                         unplugged. Each source still individually Skips if
+                                         its own URL/token below is not configured.
               --octopus-url / --octopus-token           Octopus Deploy space base URL and API key.
               --dbexplorer-url / --dbexplorer-token     DbExplorer base URL and bearer token
                                                          (needs the Profiler scope).
               --gitlab-url / --gitlab-token              GitLab base URL and personal access token.
+              --github-token [--github-url]             GitHub personal access token (repo/
+                                                         actions:read). URL defaults to
+                                                         https://api.github.com; set it only
+                                                         for GitHub Enterprise Server.
 
             Environment:
               INCIDENTTIMELINE_GIT_PATH        Path to the git executable when it is not on PATH.
               INCIDENTTIMELINE_OCTOPUS_URL/_TOKEN, INCIDENTTIMELINE_DBEXPLORER_URL/_TOKEN,
-              INCIDENTTIMELINE_GITLAB_URL/_TOKEN     Fallbacks for the --online flags above,
-                                                      read when the matching flag is omitted.
+              INCIDENTTIMELINE_GITLAB_URL/_TOKEN, INCIDENTTIMELINE_GITHUB_URL/_TOKEN
+                                                    Fallbacks for the --online flags above,
+                                                    read when the matching flag is omitted.
             """);
     }
 }
